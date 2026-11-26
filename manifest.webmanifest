@@ -1,0 +1,16 @@
+{
+  "name": "Dashboard การเผาซ้ำซ้อนในพื้นที่เกษตร จังหวัดพิษณุโลก",
+  "short_name": "เผาซ้ำซ้อน พล.",
+  "description": "ติดตามการเผาพื้นที่เกษตรซ้ำซ้อนรายอำเภอและรายตำบล เพื่อเฝ้าระวังการเผา จัดทำโดย สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดพิษณุโลก",
+  "lang": "th",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1ece5",
+  "theme_color": "#3b2d26",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

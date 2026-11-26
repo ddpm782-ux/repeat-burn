@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>การเผาซ้ำซ้อนในพื้นที่เกษตร</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="เผาซ้ำซ้อน พล.">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#3b2d26">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top cap">
+    <span class="brand"><img src="img/logo-plk.png" alt="ตราจังหวัดพิษณุโลก" width="44" height="44"><small>จังหวัดพิษณุโลก</small></span>
+    <div><b>ระบบติดตามการเผาซ้ำซ้อนในพื้นที่เกษตร</b><small>สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดพิษณุโลก</small></div>
+    <label class="srch"><span class="orb" aria-hidden="true"></span><input id="q" list="tlist" placeholder="ค้นหาตำบล เช่น คุยม่วง" aria-label="ค้นหาตำบล"><datalist id="tlist"></datalist></label>
+    <select id="prov" aria-label="เลือกจังหวัด"></select>
+  </header>
+
+  <div class="shell">
+    <nav class="rail cap" aria-label="ส่วนของหน้า">
+      <a href="#overview" class="on"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/></svg><span>ภาพรวม</span></a>
+      <a href="#district"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 8 8h-8z" fill="currentColor"/></svg><span>อำเภอ</span></a>
+      <a href="#compare"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="4" width="14" height="3" rx="1.5"/><rect x="3" y="10.5" width="18" height="3" rx="1.5"/><rect x="3" y="17" width="9" height="3" rx="1.5"/></svg><span>เทียบ 17 จังหวัด</span></a>
+      <a href="#map"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z M9 4v14 M15 6v14"/></svg><span>แผนที่</span></a>
+      <a href="#table"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M3 15h18M9 4v16"/></svg><span>ตารางตำบล</span></a>
+    </nav>
+
+    <main class="tray">
+      <div class="head">
+        <div>
+          <h1 id="title">การเผาซ้ำซ้อนในพื้นที่เกษตร</h1>
+          <p class="sub">จุดความร้อนจากดาวเทียม VIIRS ในพื้นที่เกษตร ปี พ.ศ. <span data-yr>2564–2568</span> สำหรับเฝ้าระวังการเผาในฤดูไฟปี 2569/70</p>
+        </div>
+        <div class="ctl">
+          <select id="amp" aria-label="เลือกอำเภอ"></select>
+          <select id="year" aria-label="เลือกปี"></select>
+          <button class="pill dark" data-ex="report" data-ty="PDF">รายงาน PDF ทั้งฉบับ</button>
+        </div>
+      </div>
+
+      <label class="srch mob"><span class="orb" aria-hidden="true"></span><input id="q2" list="tlist" placeholder="ค้นหาตำบล" aria-label="ค้นหาตำบล"></label>
+      <div class="chips" id="chips" aria-live="polite"></div>
+      <section id="overview" class="grid g2" style="margin-top:0">
+        <div class="card" id="c-overview">
+          <div class="ch"><div><h2>จุดความร้อนในพื้นที่เกษตร</h2><p id="ovsub"></p></div><div class="ex-btns" data-card="overview"></div></div>
+          <div class="kpi ex">
+            <div>
+              <div class="num" id="big"></div>
+              <div class="chg" id="chg"></div>
+              <div class="rank"><div class="track"><i id="rkbar"></i></div><p id="rktxt"></p></div>
+            </div>
+            <div><div class="bars" id="bars"></div></div>
+          </div>
+        </div>
+        <div class="card" id="c-watch">
+          <div class="ch"><div><h2>ตำบลที่ต้องเฝ้าระวัง</h2><p>เปิดสวิตช์ = แสดงเฉพาะตำบลกลุ่มนั้นบนแผนที่และในตาราง (ครั้งละ 1 กลุ่ม) · ปิด = แสดงทุกตำบล</p></div><div class="ex-btns" data-card="watch"></div></div>
+          <div class="watch ex" id="watch"></div>
+        </div>
+      </section>
+
+      <section id="district">
+        <div class="card" id="c-district">
+          <div class="ch"><div><h2>อำเภอที่พบการเผาซ้ำซ้อน</h2><p>วงแหวน = สัดส่วนจุดรวม <span data-ny>5</span> ปีของจังหวัด · ป้าย = เปลี่ยนแปลงจากปีก่อนหน้า</p></div><div class="ex-btns" data-card="district"></div></div>
+          <div class="rings ex" id="rings"></div>
+        </div>
+      </section>
+
+      <section id="compare">
+        <div class="card" id="c-compare">
+          <div class="ch"><div><h2>เปรียบเทียบ 17 จังหวัด</h2><p id="cmpsub"></p></div><div class="ex-btns" data-card="compare"></div></div>
+          <div class="cmp ex">
+            <div>
+              <div class="fig" id="line"><svg role="img" aria-label="กราฟเส้นแนวโน้ม 5 ปี"></svg></div>
+              <div class="lg"><span><i style="background:var(--acc)"></i><b id="lgme"></b></span><span><i style="background:var(--mut)"></i>ค่าเฉลี่ย 17 จังหวัด</span></div>
+            </div>
+            <div>
+              <div class="seg" id="cmpmode" style="margin-bottom:10px">
+                <button data-m="year" class="on">จำนวนจุดปีที่เลือก</button><button data-m="pct">ร้อยละเปลี่ยนแปลงจากปี <span data-y0>2564</span></button><button data-m="tot">รวม <span data-ny>5</span> ปี</button>
+              </div>
+              <div id="hbars"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="map">
+        <div class="card" id="c-map">
+          <div class="ch"><div><h2>แผนที่ระดับสีรายตำบล</h2><p>เลือกพื้นที่จากตัวกรอง หรือแตะแผนที่: แตะจังหวัดอื่นเพื่อเปลี่ยนจังหวัด · แตะตำบลเพื่อดูรายละเอียด · ลากเพื่อเลื่อน</p></div><div class="ex-btns" data-card="map"></div></div>
+          <div class="filters mf">
+            <select id="mprov" aria-label="จังหวัด"></select>
+            <select id="mamp" aria-label="อำเภอ"></select>
+            <select id="mtam" aria-label="ตำบล"></select>
+          </div>
+          <div class="seg" id="basesel" style="margin:0 0 10px" aria-label="พื้นหลังแผนที่"><button data-base="sat" class="on">ภาพดาวเทียม</button><button data-base="street">แผนที่ถนน</button><button data-base="none">ไม่มีพื้นหลัง</button></div>
+          <div class="seg" id="metric" style="margin-bottom:12px">
+            <button data-m="total" class="on">รวม <span data-ny>5</span> ปี</button><button data-m="year">ปีที่เลือก</button><button data-m="yrs">จำนวนปีที่พบ</button><button data-m="trend">แนวโน้ม 5 ปี</button><button data-m="risk">ความเสี่ยงเกิน 1 ปี</button><button data-m="watch">ระดับเฝ้าระวัง</button>
+          </div>
+          <div class="mapw">
+            <div class="ex">
+              <div class="map" id="mapbox"><svg id="msvg" role="img" aria-label="แผนที่ตำบล"><g id="gbase"></g><g id="gt"></g><g id="ga"></g><g id="gp"></g><g id="gl"></g></svg>
+                <div class="zoom"><button id="zi" aria-label="ซูมเข้า">+</button><button id="zo" aria-label="ซูมออก">−</button><button id="zr" aria-label="กลับไปพื้นที่ที่เลือก">⌂</button><button id="zall" aria-label="ดูทั้ง 17 จังหวัด" style="font-size:12px">17</button></div>
+                <div class="tip" id="tip"></div>
+                <div class="attr" id="attr"></div>
+              </div>
+              <div class="lg" id="mlg"></div>
+            </div>
+            <aside class="info" id="info"><h3>แตะตำบลบนแผนที่</h3><p style="color:var(--mut);margin:6px 0 0">หรือเลือกจากช่อง "ตำบล" ด้านบน ข้อมูลรายปี แนวโน้ม และระดับเฝ้าระวังจะแสดงที่นี่</p></aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="table">
+        <div class="card" id="c-table">
+          <div class="ch"><div><h2>ตารางตำบล</h2><p>กดหัวคอลัมน์เพื่อเรียง</p></div><div class="ex-btns" data-card="table"></div></div>
+          <div class="filters">
+            <select id="ftrend" aria-label="แนวโน้ม"><option value="">แนวโน้ม 5 ปี: ทั้งหมด</option><option value="2">เพิ่มขึ้น</option><option value="1">คงที่</option><option value="0">ลดลง</option></select>
+            <select id="frisk" aria-label="ความเสี่ยง"><option value="">ความเสี่ยงเกิน 1 ปี: ทั้งหมด</option><option value="2">เพิ่มขึ้น</option><option value="1">เท่าเดิม</option><option value="0">ลดลง</option></select>
+            <select id="fyrs" aria-label="จำนวนปีที่พบ"><option value="">จำนวนปีที่พบ: ทั้งหมด</option><option value="all">ครบทุกปี</option><option value="4">4 ปีขึ้นไป</option><option value="3">3 ปีขึ้นไป</option></select>
+            <select id="fwatch" aria-label="ระดับเฝ้าระวัง"><option value="">ระดับเฝ้าระวัง: ทั้งหมด</option><option value="2">สูง</option><option value="1">ปานกลาง</option><option value="0">ต่ำ</option></select>
+            <input id="fq" placeholder="ค้นหาชื่อตำบลหรืออำเภอ" aria-label="ค้นหา">
+          </div>
+          <div class="tw ex"><table><thead><tr id="thr"></tr></thead><tbody id="tb"></tbody></table></div>
+          <div class="cnt" id="cnt"></div>
+        </div>
+      </section>
+
+      <p class="note" id="note">หมายเหตุ: หน่วยเป็นจุดความร้อน · ระดับเฝ้าระวัง สูง = พบการเผา 4 ปีขึ้นไป และความเสี่ยงหรือแนวโน้มเพิ่มขึ้น · ปานกลาง = พบ 3 ปีขึ้นไป · ต่ำ = กรณีอื่น · "ความเสี่ยงเผาซ้ำซ้อนเกิน 1 ปี" และ "แนวโน้ม 5 ปี" เป็นค่าตามไฟล์ต้นทาง · ขอบเขตปกครองจาก OpenGISData-Thailand (ตำบลที่ไม่มีขอบเขตแสดงในตารางและตัวเลขสรุป แต่ไม่แสดงบนแผนที่) · <span id="built"></span></p>
+    </main>
+  </div>
+  <footer class="foot">
+    <div class="fgrid">
+      <div class="fcol">
+        <div class="fby">จัดทำโดย</div>
+        <b class="forg">สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดพิษณุโลก</b>
+        <p>ศาลากลางจังหวัดพิษณุโลก (หลังเก่า) ชั้น 3 อำเภอเมืองพิษณุโลก จังหวัดพิษณุโลก</p>
+        <p>โทรศัพท์/โทรสาร <span class="nw">0-5523-0398</span></p>
+        <a class="fb" href="https://facebook.com/disaster.phitsanulok"><span class="fbi" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M14 8V6.5c0-.8.2-1.3 1.4-1.3H17V2.2C16.7 2.1 15.6 2 14.4 2 11.9 2 10.2 3.5 10.2 6.3V8H7.5v3.4h2.7V22H14V11.4h2.8l.4-3.4z"/></svg></span>facebook.com/disaster.phitsanulok</a>
+      </div>
+      <div class="fhot">
+        <span class="hic" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span>
+        <div><small>สายด่วน</small><b>1784</b><small>ตลอด 24 ชั่วโมง</small></div>
+      </div>
+      <div class="fsrc">
+        <span class="badge"><img src="img/logo-doae.png" alt="ตรากรมส่งเสริมการเกษตร" width="58" height="60"></span>
+        <div><div class="fby">แหล่งที่มาข้อมูล</div>
+        <b>สำนักงานเกษตรจังหวัดพิษณุโลก</b>
+        <p>กรมส่งเสริมการเกษตร · จุดความร้อนดาวเทียม VIIRS ในพื้นที่เกษตร ปี พ.ศ. <span data-yr>2564–2568</span></p></div>
+      </div>
+      <div class="femb">
+        <img class="emb" src="img/logo-ddpm.png" alt="ตรากรมป้องกันและบรรเทาสาธารณภัย" width="54" height="77">
+        <div><b>สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดพิษณุโลก</b><small>กรมป้องกันและบรรเทาสาธารณภัย<br>กระทรวงมหาดไทย</small></div>
+      </div>
+    </div>
+    <div class="fbase">© 2569 สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดพิษณุโลก · อนุญาตให้นำไปใช้เพื่อประโยชน์สาธารณะโดยอ้างอิงแหล่งที่มา · ข้อมูล: สำนักงานเกษตรจังหวัดพิษณุโลก</div>
+  </footer>
+</div>
+
+<nav class="dock cap" aria-label="เมนูลัด">
+  <a href="#overview" class="on">ภาพรวม</a><a href="#district">อำเภอ</a><a href="#compare">เทียบจังหวัด</a><a href="#map">แผนที่</a><a href="#table">ตาราง</a>
+  <button data-ex="report" data-ty="PDF" aria-label="ส่งออกรายงาน">+</button>
+</nav>
+
+<dialog id="dlg"><div class="dh"><b id="dt"></b><button id="dclose">ปิด</button></div><div class="sheet" id="dbody"></div></dialog>
+<div id="exstage" aria-hidden="true"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="vendor/xlsx.full.min.js"></script>
+<script src="vendor/html-to-image.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="js/core.js"></script>
+<script src="js/map.js"></script>
+<script src="js/export.js"></script>
+<script src="js/admin.js"></script>
+<script>if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});</script>
+</body>
+</html>
